@@ -1,1 +1,3 @@
+Django
 django-json-field
+git+git://github.com/MagicSolutions/open-singly.git#egg=open_singly
