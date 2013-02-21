@@ -7,9 +7,9 @@ from open_singly import SinglyAPI
 
 
 class SinglyProfileBase(models.Model):
-    account = models.CharField(max_length=255, unique=True)
-    singly_access_token = models.CharField(max_length=512)
-    profile = JSONField()
+    account = models.CharField(max_length=255, blank=True, default='', db_index=True)
+    singly_access_token = models.CharField(max_length=512, blank=True, default='')
+    profile = JSONField(blank=True, default={})
 
     class Meta:
         abstract = True
