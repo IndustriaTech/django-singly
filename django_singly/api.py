@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.core.exceptions import ImproperlyConfigured
 from django.core.urlresolvers import reverse, NoReverseMatch
-from dajngo.db.models import get_model
+from django.db.models import get_model
 
 from open_singly import Singly, SinglyAPI
 
@@ -9,7 +9,7 @@ try:
     CALLBACK_URL = settings.SINGLY_CALLBACK_URL
 except AttributeError:
     if 'django.contrib.sites' in settings.INSTALLED_APPS:
-        site = get_model('sites.Site').objects.get_current()
+        site = get_model('sites', 'Site').objects.get_current()
         try:
             CALLBACK_URL = 'http://%s%s' % (site.domain, reverse('django_singly.views.callback'))
         except NoReverseMatch:

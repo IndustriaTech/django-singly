@@ -15,10 +15,10 @@ def _get_names(name):
 
 
 class SinglyBackend(ModelBackend):
-    profile_model = get_model(settings.AUTH_PROFILE_MODULE)
+    profile_model = get_model(*settings.AUTH_PROFILE_MODULE.split('.'))
 
-    def authenticate(self, code=None):
-        api = singly.authenticate(code)
+    def authenticate(self, singly_code):
+        api = singly.authenticate(singly_code)
         if api:
             access_token = api.get_access_token()
             account = api.get_account()

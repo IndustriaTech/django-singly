@@ -8,4 +8,4 @@ class SinglyProfiileAdmin(admin.ModelAdmin):
     list_display = ['user', 'account', 'services', 'singly_access_token']
 
 if settings.AUTH_PROFILE_MODULE == 'django_singly.SinglyProfile':
-    admin.site.register(get_model(settings.AUTH_PROFILE_MODULE), SinglyProfiileAdmin)
+    admin.site.register(get_model(*settings.AUTH_PROFILE_MODULE.split('.')), SinglyProfiileAdmin)
