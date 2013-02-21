@@ -15,10 +15,18 @@ class SinglyProfileBase(models.Model):
 
     @property
     def services(self):
-        return self.profile['services'].keys()
+        """
+        Return list of services for given user
+
+        """
+        return self.profile.get('services', {}).keys()
 
     @property
     def singly(self):
+        """
+        Property which returns a SinglyAPI object for current user
+
+        """
         if not self.singly_access_token:
             return
         if not hasattr(self, '_singly_cache'):
