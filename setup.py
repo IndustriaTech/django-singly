@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='open-singly',
+    name='django-singly',
     version='0.1',
     description='IDjango package for integration with Singly API (uses open-singly)',
     author='Venelin Stoykov',
