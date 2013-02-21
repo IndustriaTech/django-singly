@@ -13,6 +13,9 @@ class SinglyProfileBase(models.Model):
     class Meta:
         abstract = True
 
+    def __unicode__(self):
+        return "Profile for '%s'" % self.user
+
     @property
     def services(self):
         """
@@ -32,9 +35,6 @@ class SinglyProfileBase(models.Model):
         if not hasattr(self, '_singly_cache'):
             self._singly_cache = SinglyAPI(self.singly_access_token)
         return self._singly_cache
-
-    def __unicode__(self):
-        return "Profile for '%s'" % self.user
 
 
 class SinglyProfile(SinglyProfileBase):
