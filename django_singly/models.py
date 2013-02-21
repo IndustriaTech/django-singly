@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from json_field import JSONField
 from open_singly import SinglyAPI
@@ -37,5 +38,12 @@ class SinglyProfileBase(models.Model):
         return self._singly_cache
 
 
-class SinglyProfile(SinglyProfileBase):
-    user = models.OneToOneField(User, related_name='singly')
+if settings.AUTH_PROFILE_MODULE == 'django_singly.SinglyProfile':
+
+    class SinglyProfile(SinglyProfileBase):
+        """
+        Singly profiles will be stored here if AUTH_PROFILE_MODULE
+        is set to this model. In other cases you must extend a
+        SinglyProfileBase and add user field with foreign key to User
+        """
+        user = models.OneToOneField(User, related_name='singly', editable=False)
