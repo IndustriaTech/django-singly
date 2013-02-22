@@ -3,7 +3,8 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import get_model
 from django.conf import settings
 
-from .api import singly
+from .api import singly, NEW_USERS_ARE_ACTIVE
+from signals import singly_user_registered, singly_profile_pre_update, singly_profile_post_update
 
 
 def _get_names(name):
@@ -29,7 +30,7 @@ class SinglyBackend(ModelBackend):
             except self.profile_model.DoesNotExist:
                 email = profile_data.get('email') or ''
                 user = None
-
+                created = False
                 if email:
                     try:
                         user = User.objects.get(email=email)
@@ -43,7 +44,9 @@ class SinglyBackend(ModelBackend):
                         email=email,
                         first_name=first_name,
                         last_name=last_name,
+                        is_active=NEW_USERS_ARE_ACTIVE,
                     )
+                    created = True
 
                 try:
                     # If user is found by e-mail or there is a signal creating profile automaticaly
@@ -53,9 +56,16 @@ class SinglyBackend(ModelBackend):
                     # If it fails, then we create new profile
                     profile = self.profile_model(user=user)
 
+                if created:
+                    singly_user_registered.send(sender=User, user=user, profile_data=profile_data)
+
+            singly_profile_pre_update.send(sender=User, user=profile.user, profile=profile, profile_data=profile_data)
+
             profile.account = account
             profile.singly_access_token = access_token
             profile.profile = profile_data
             profile.save()
+
+            singly_profile_post_update.send(sender=User, user=profile.user, profile=profile, profile_data=profile_data)
             return profile.user
         return None

@@ -5,6 +5,8 @@ from django.db.models import get_model
 
 from open_singly import Singly, SinglyAPI
 
+NEW_USERS_ARE_ACTIVE = getattr(settings, 'SINGLY_NEW_USERS_ARE_ACTIVE', True)
+
 try:
     CALLBACK_URL = settings.SINGLY_CALLBACK_URL
 except AttributeError:
