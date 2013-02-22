@@ -6,6 +6,7 @@ from django.db.models import get_model
 from open_singly import Singly, SinglyAPI
 
 NEW_USERS_ARE_ACTIVE = getattr(settings, 'SINGLY_NEW_USERS_ARE_ACTIVE', True)
+FACEBOOK_DEFAULT_SCOPE = getattr(settings, 'FACEBOOK_DEFAULT_SCOPE', [])
 
 try:
     CALLBACK_URL = settings.SINGLY_CALLBACK_URL
@@ -20,7 +21,7 @@ except AttributeError:
         raise ImproperlyConfigured('You must specify SINGLY_CALLBACK_URL in your settings or you must add django.contrib.sites in INSTALLED_APPS')
 
 
-singly = Singly(settings.SINGLY_CLIENT_ID, settings.SINGLY_CLIENT_SECRET, CALLBACK_URL)
+singly = Singly(settings.SINGLY_CLIENT_ID, settings.SINGLY_CLIENT_SECRET, CALLBACK_URL, default_scopes={'facebook': FACEBOOK_DEFAULT_SCOPE})
 
 
 __all__ = ['singly', 'SinglyAPI']
