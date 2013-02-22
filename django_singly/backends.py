@@ -34,7 +34,7 @@ class SinglyBackend(ModelBackend):
                 if email:
                     try:
                         user = User.objects.get(email=email)
-                    except User.objects.DoesNotExist:
+                    except User.DoesNotExist:
                         pass
 
                 if not user:
