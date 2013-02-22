@@ -34,7 +34,7 @@ class SinglyProfileBase(models.Model):
         if not self.singly_access_token:
             return
         if not hasattr(self, '_singly_cache'):
-            self._singly_cache = SinglyAPI(self.singly_access_token)
+            self._singly_cache = SinglyAPI(access_token=self.singly_access_token)
         return self._singly_cache
 
 
