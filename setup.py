@@ -2,8 +2,8 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-singly',
-    version='0.1',
-    description='IDjango package for integration with Singly API (uses open-singly)',
+    version='0.2',
+    description='Django package for integration with Singly API (uses open-singly)',
     author='Venelin Stoykov',
     author_email='venelin@magicsolutions.bg',
     url='https://github.com/MagicSolutions/django-singly',
