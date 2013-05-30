@@ -2,8 +2,6 @@ from django.http import HttpResponseRedirect
 from django.contrib.auth import authenticate, login
 from django.conf import settings
 
-from .api import singly
-
 CALLBACK_REDIRECT = getattr(settings, 'SINGLY_CALLBACK_REDIRECT', '/')
 CALLBACK_FAIL_REDIRECT = getattr(settings, 'SINGLY_CALLBACK_FAIL_REDIRECT', '/login/fail/')
 CALLBACK_ERROR_REDIRECT = getattr(settings, 'SINGLY_CALLBACK_ERROR_REDIRECT', '/login/error/')
@@ -24,6 +22,9 @@ def callback(request):
 
 
 def login_redirect(request, service):
+    # This import prevents circular import if SINGLY_CALLBACK_URL is not set
+    from .api import singly
+
     user = request.user
     next = request.REQUEST.get('next')
     if user.is_authenticated():
