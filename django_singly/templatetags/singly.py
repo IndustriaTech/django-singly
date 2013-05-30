@@ -21,4 +21,9 @@ def singly_login_url(context, service):
         access_token = profile.singly_access_token
     else:
         access_token = None
-    return singly.get_authentication_url(service, access_token)
+    request = context.get('request')
+    if request:
+        next = request.GET.get('next')
+    else:
+        next = None
+    return singly.get_authentication_url(service, access_token, next_url=next)
