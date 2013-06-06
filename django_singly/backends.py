@@ -25,39 +25,10 @@ class SinglyBackend(ModelBackend):
             account = api.get_account()
             profile_data = api.get_profile()  # This will works because profile is set to 'all' or 'last'
 
-            try:
-                profile = self.profile_model.objects.select_related('user').get(account=account)
-            except self.profile_model.DoesNotExist:
-                email = profile_data.get('email') or ''
-                user = None
-                created = False
-                if email:
-                    try:
-                        user = User.objects.get(email=email)
-                    except User.DoesNotExist:
-                        pass
+            profile, created = self.get_profile(account, profile_data)
 
-                if not user:
-                    first_name, last_name = _get_names(profile_data.get('name', ''))
-                    user = User.objects.create(
-                        username=account[:30],
-                        email=email,
-                        first_name=first_name,
-                        last_name=last_name,
-                        is_active=NEW_USERS_ARE_ACTIVE,
-                    )
-                    created = True
-
-                try:
-                    # If user is found by e-mail or there is a signal creating profile automaticaly
-                    # then we try to get this profile
-                    profile = user.get_profile()
-                except self.profile_model.DoesNotExist:
-                    # If it fails, then we create new profile
-                    profile = self.profile_model(user=user)
-
-                if created:
-                    singly_user_registered.send(sender=User, user=user, profile_data=profile_data)
+            if created:
+                singly_user_registered.send(sender=User, user=profile.user, profile_data=profile_data)
 
             singly_profile_pre_update.send(sender=User, user=profile.user, profile=profile, profile_data=profile_data)
 
@@ -69,3 +40,57 @@ class SinglyBackend(ModelBackend):
             singly_profile_post_update.send(sender=User, user=profile.user, profile=profile, profile_data=profile_data)
             return profile.user
         return None
+
+    def get_profile(self, account, profile_data=None):
+        """
+        Try to get profile from the database
+
+        Returns tuple containing profile object and boolean indicates if user is new or no
+
+        """
+        try:
+            profile = self.profile_model.objects.select_related('user').get(account=account)
+        except self.profile_model.DoesNotExist:
+            pass
+        else:
+            return profile, False
+
+        profile_data = profile_data or {}
+        user = self.find_user(profile_data)
+
+        created = False
+        if not user:
+            first_name, last_name = _get_names(profile_data.get('name', ''))
+            email = profile_data.get('email') or ''
+            user = User.objects.create(
+                username=account[:30],
+                email=email,
+                first_name=first_name,
+                last_name=last_name,
+                is_active=NEW_USERS_ARE_ACTIVE,
+            )
+            created = True
+
+        try:
+            # If user is found by e-mail or there is a signal creating profile automaticaly
+            # then we try to get this profile
+            profile = user.get_profile()
+        except self.profile_model.DoesNotExist:
+            # If it fails, then we create new profile
+            profile = self.profile_model(user=user)
+
+        return profile, created
+
+    def find_user(self, profile_data):
+        """
+        Try to get user matching some criteria.
+        By default we can try to match by e-mail address.
+
+        This method can be overwritten to search by extra criteria
+
+        """
+        email = profile_data.get('email') or ''
+        try:
+            return User.objects.get(email=email)
+        except User.DoesNotExist:
+            pass
