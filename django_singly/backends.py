@@ -90,7 +90,8 @@ class SinglyBackend(ModelBackend):
 
         """
         email = profile_data.get('email') or ''
-        try:
-            return User.objects.get(email=email)
-        except User.DoesNotExist:
-            pass
+        if email:
+            try:
+                return User.objects.get(email=email)
+            except User.DoesNotExist:
+                pass
