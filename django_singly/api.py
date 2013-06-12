@@ -6,6 +6,7 @@ from django.db.models import get_model
 from open_singly import Singly, SinglyAPI
 
 NEW_USERS_ARE_ACTIVE = getattr(settings, 'SINGLY_NEW_USERS_ARE_ACTIVE', True)
+UPDATE_EMAIL_ON_LOGIN = getattr(settings, 'SINGLY_UPDATE_EMAIL_ON_LOGIN', False)
 FACEBOOK_DEFAULT_SCOPE = getattr(settings, 'FACEBOOK_DEFAULT_SCOPE', [])
 
 try:

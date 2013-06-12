@@ -3,7 +3,7 @@ from django.contrib.auth.backends import ModelBackend
 from django.db.models import get_model
 from django.conf import settings
 
-from .api import singly, NEW_USERS_ARE_ACTIVE
+from .api import singly, NEW_USERS_ARE_ACTIVE, UPDATE_EMAIL_ON_LOGIN
 from signals import singly_user_registered, singly_profile_pre_update, singly_profile_post_update
 
 
@@ -37,8 +37,15 @@ class SinglyBackend(ModelBackend):
             profile.profile = profile_data
             profile.save()
 
-            singly_profile_post_update.send(sender=User, user=profile.user, profile=profile, profile_data=profile_data)
-            return profile.user
+            user = profile.user
+
+            if UPDATE_EMAIL_ON_LOGIN and profile_data.get('email'):
+                # We don't need to save the user because backend will save it
+                # when update last login date
+                user.email = profile_data['email']
+
+            singly_profile_post_update.send(sender=User, user=user, profile=profile, profile_data=profile_data)
+            return user
         return None
 
     def get_profile(self, account, profile_data=None):
