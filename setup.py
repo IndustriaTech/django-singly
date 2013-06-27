@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-singly',
-    version='0.2.4',
+    version='0.2.5',
     description='Django package for integration with Singly API (uses open-singly)',
     author='Venelin Stoykov',
     author_email='venelin@magicsolutions.bg',
