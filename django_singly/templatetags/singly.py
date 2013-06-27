@@ -23,7 +23,7 @@ def singly_login_url(context, service):
         access_token = None
     request = context.get('request')
     if request:
-        next = request.GET.get('next')
+        next = request.GET.get('next') or request.get_full_path()
     else:
         next = None
     return singly.get_authentication_url(service, access_token, next_url=next)

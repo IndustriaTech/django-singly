@@ -26,7 +26,7 @@ def login_redirect(request, service):
     from .api import singly
 
     user = request.user
-    next = request.REQUEST.get('next')
+    next = request.REQUEST.get('next') or request.get_full_path()
     if user.is_authenticated():
         profile = user.get_profile()
         access_token = profile.singly_access_token
