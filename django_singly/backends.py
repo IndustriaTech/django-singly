@@ -9,7 +9,7 @@ from signals import singly_user_registered, singly_profile_pre_update, singly_pr
 
 def _get_names(name):
     try:
-        first_name, last_name = name.split(' ')
+        first_name, last_name = name.split(' ', 1)
     except ValueError:
         first_name, last_name = name, ''
     return first_name, last_name
