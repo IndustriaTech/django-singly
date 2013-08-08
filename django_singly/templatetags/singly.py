@@ -1,8 +1,9 @@
-from django import template
+from django.template import Library
+from django.utils.encoding import iri_to_uri
 
 from django_singly.api import singly
 
-register = template.Library()
+register = Library()
 
 
 @register.simple_tag(takes_context=True)
@@ -26,4 +27,4 @@ def singly_login_url(context, service):
         next = request.GET.get('next') or request.get_full_path()
     else:
         next = None
-    return singly.get_authentication_url(service, access_token, next_url=next)
+    return singly.get_authentication_url(service, access_token, next_url=iri_to_uri(next))
