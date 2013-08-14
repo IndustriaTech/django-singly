@@ -10,9 +10,9 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=[
-      'Django',
-      'django-json-field',
-      'open_singly',
+      'Django>=1.4',
+      'django-json-field>=0.5.4',
+      'open-singly>=0.2',
     ],
     classifiers=[
       'Development Status :: 4 - Beta',
